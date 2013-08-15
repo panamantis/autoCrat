@@ -1,4 +1,6 @@
 var scriptTitle = "autoCrat Script V4.3.1 (4/9/13)";
+var scriptName = "autoCrat"
+var analyticsId = 'UA-30983014-1'
 // Written by Andrew Stillman for New Visions for Public Schools
 // Published under GNU General Public License, version 3 (GPL-3.0)
 // See restrictions at http://www.opensource.org/licenses/gpl-3.0.html
