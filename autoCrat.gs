@@ -1,4 +1,4 @@
-var scriptTitle = "autoCrat Script V4.3.3 (8/20/13)";
+var scriptTitle = "autoCrat Script V4.3.1 (4/9/13)";
 var scriptName = "autoCrat"
 var analyticsId = 'UA-30983014-1'
 // Written by Andrew Stillman for New Visions for Public Schools
@@ -1085,7 +1085,7 @@ function autoCrat_makeMergeDoc(copyId, rowValues, rowFormats, folderId, secondar
      var normalizedFieldName = autoCrat_normalizeHeader(mergeFields[i]);
      var colNum = mappingObject[normalizedFieldName];
      var timeZone = Session.getTimeZone();
-    if (((rowFormats[colNum-1]=="M/d/yyyy")||(rowFormats[colNum-1]=="MMMM d, yyyy")||(rowFormats[colNum-1]=="M/d/yyyy H:mm:ss"))&&(rowValues[colNum-1]!='')) {
+    if ((rowFormats[colNum-1]=="M/d/yyyy")||(rowFormats[colNum-1]=="MMMM d, yyyy")||(rowFormats[colNum-1]=="M/d/yyyy H:mm:ss")) {
       try {
      var colVal = Utilities.formatDate(rowValues[colNum-1], timeZone, rowFormats[colNum-1]);
       }
@@ -1759,7 +1759,6 @@ function autoCrat_evaluateConditions(condString, index, rowData, normalizedHeade
 
 
 function autoCrat_defineTemplate() {
-  setAutocratUid();
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   //  var headers = ss.getActiveSheet().getRange(1, 1, 1, sheet.getLastColumn());
   var headers = ss.getSheets()[0].getRange(1, 1, 1, ss.getSheets()[0].getLastColumn()).getValues()[0];
