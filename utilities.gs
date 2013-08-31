@@ -35,7 +35,7 @@ function autoCrat_logInstall()
   if (!UserProperties.getProperty("autoCrat_uid")){
     NVSL.log("First%20Install", scriptName ,analyticsId, systemName)
   }else{
-    NVSL.log("Repeat%20Instal", scriptName, analyticsId, systemName)
+    NVSL.log("Repeat%20Install", scriptName, analyticsId, systemName)
   }
    
 }
