@@ -1,4 +1,4 @@
-var scriptTitle = "autoCrat Script V4.3.1 (4/9/13)";
+var scriptTitle = "autoCrat Script V4.4.0 (10/20/13)";
 var scriptName = "autoCrat"
 var analyticsId = 'UA-30983014-1'
 // Written by Andrew Stillman for New Visions for Public Schools
@@ -66,22 +66,6 @@ function autoCrat_initialize() {
     menuEntries.push({name: "Advanced options", functionName: "autoCrat_advanced"});
   }
   ss.addMenu("autoCrat", menuEntries);
-  
-  //ensure readme sheets exist.  If not, install it and set as active sheet.
-  var sheets = ss.getSheets();
-  var readMeSet = false;
-  for (var i=0; i<sheets.length; i++) {
-    if (sheets[i].getName()=="autoCrat Read Me") {
-      readMeSet = true;
-      break;
-    }
-  }
-  if (readMeSet==false) {
-    ss.insertSheet("autoCrat Read Me");
-    autoCrat_setReadMeText();
-    var sheet = ss.getSheetByName("autoCrat Read Me");
-    ss.setActiveSheet(sheet);
-  }
   if ((preconfigStatus)&&(!(fileId))) {
     autoCrat_defineTemplate();
   }
@@ -93,11 +77,14 @@ function autoCrat_advanced() {
   var ss = SpreadsheetApp.getActive();
   var app = UiApp.createApplication().setTitle("Advanced options").setHeight(130).setWidth(290);
   var quitHandler = app.createServerHandler('autoCrat_quitUi');
+  var handler1 = app.createServerHandler('detectFormSheet');
+  var button1 = app.createButton('Copy down formulas on form submit').addClickHandler(quitHandler).addClickHandler(handler1);
   var handler2 = app.createServerHandler('autoCrat_extractorWindow');
   var button2 = app.createButton('Package this system for others to copy').addClickHandler(quitHandler).addClickHandler(handler2);
   var handler3 = app.createServerHandler('autoCrat_institutionalTrackingUi');
   var button3 = app.createButton('Manage your usage tracker settings').addClickHandler(quitHandler).addClickHandler(handler3);
   var panel = app.createVerticalPanel();
+  panel.add(button1);
   panel.add(button2);
   panel.add(button3);
   app.add(panel);
@@ -135,7 +122,8 @@ function autoCrat_onFormSubmit() {
   var fileSetting = ScriptProperties.getProperty('fileSetting');
   var emailSetting = ScriptProperties.getProperty('emailSetting');
   if ((formTrigger == "true")&&(fileSetting == "true") || (formTrigger == "true")&&(emailSetting == "true")) {
-  autoCrat_runMerge();
+    autoCrat_waitForFormulaCaddy(ss)
+    autoCrat_runMerge();
   }
   lock.releaseLock();
 }
@@ -1295,7 +1283,7 @@ function autoCrat_mapFields() {
   grid.setWidget(i, 0, app.createLabel().setText("Important: These mappings will hold true only if you don't modify the order of columns in the sheet. \n Dates must be formatted as \"M/d/yyyy\", \"MMMM d, yyyy\", or \"M/d/yyyy H:mm:ss\" using number formats in the spreadsheet").setStyleAttribute("fontSize","9px"));
   grid.setWidget(i, 1, button);
   panel.setStyleAttribute('overflow', 'scroll');
-  panel.setHeight("345px");
+  panel.setHeight("330px");
   panel.add(grid);
   app.add(helpPopup);
   app.add(topGrid);
@@ -1760,7 +1748,11 @@ function autoCrat_evaluateConditions(condString, index, rowData, normalizedHeade
 
 function autoCrat_defineTemplate() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
-  //  var headers = ss.getActiveSheet().getRange(1, 1, 1, sheet.getLastColumn());
+  var topSheet = ss.getSheets()[0];
+  if (topSheet.getLastColumn()<1) {
+    topSheet.getRange(1, 1, 1, 3).setValues([['Dummy Header 1','Dummer Header 2','Dummy Header 3']]);
+    SpreadsheetApp.flush();
+  }
   var headers = ss.getSheets()[0].getRange(1, 1, 1, ss.getSheets()[0].getLastColumn()).getValues()[0];
   var normalizedHeaders = autoCrat_normalizeHeaders(headers);
   var app = UiApp.createApplication().setWidth(600).setHeight(350);
